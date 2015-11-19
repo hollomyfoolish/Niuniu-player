@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Niuniu Player</title>
+    <link rel="stylesheet" type="text/css" href="./ui/lib/jqueryui/jquery-ui.min.css">
+    <script type="text/javascript" src="./ui/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="./ui/lib/jqueryui/jquery-ui-1.11.4.min.js"></script>
+    <script type="text/javascript" src="./ui/player.js"></script>
+</head>
+<body>
+    <div id="slider"></div>
+    <button onclick="switch_mp3()">换歌</button>
+<button onclick="audio.pause()">暂停</button>
+<button onclick="audio.play()">继续</button>
+ 
+<br>
+<input type="range" name="volume" id="volume" value="100"> 音量
+<br>
+<input type="range" name="slide" id="slide" style="width:300px;" value="0">
+<br>
+<script>
+    var gui = require("nw.gui");
+    mwin = gui.Window.get();
+    var i = 0,
+        volume = document.getElementById('volume'),
+        slide = document.getElementById('slide'),
+        slide1 = document.getElementById('slide1'),
+        audio = new Audio(),
+        mp3s = [
+            "./res/羽泉 - 彩虹.mp3",
+            "./res/羽泉 - 心似狂潮.mp3",
+            "./res/羽泉 - 桃花源.mp3"
+        ];
+    document.body.appendChild( audio );
+ 
+    var focus, loadFn = function(){ //flash加载
+        audio.load( mp3s[0] );
+        audio.play();
+ 
+        audio.ontimeupdate = function(e){   // 进度条事件, flash 版本没有详细事件
+            if( !focus ){
+                slide.value = audio.currentTime * 100 / audio.duration;
+            }
+        };
+        audio.onended = function(e){
+            switch_mp3();
+        }
+ 
+        slide.onfocus = function(){
+            focus = true;
+        };
+        slide.onblur = function(){
+            focus = false;
+        };
+        slide.onchange = function(){
+            audio.setPercent( this.value / 100 );
+        };
+        volume.onchange = function(){
+            audio.setVolume( this.value / 100 );
+        }
+    };
+     
+    // flash需要额外绑定事件。
+    if( window.Audio.flash ){
+        audio.onload = loadFn;
+    }else{
+        loadFn();
+    }
+ 
+    function switch_mp3 () {
+        mwin.showDevTools();
+        i = (i+1) % mp3s.length;
+        audio.load( mp3s[i] );
+        audio.play();
+    }
+</script>
+
+</body>
+</html>

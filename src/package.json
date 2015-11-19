@@ -1,0 +1,12 @@
+{
+  "name": "Niuniu-Player",
+  "window": {
+    "width": 600,
+    "height": 800,
+    "toolbar": true
+  },
+  "main": "niuniu.html",
+  "dependencies": {
+    
+  }
+}
