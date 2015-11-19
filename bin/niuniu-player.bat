@@ -1,0 +1,1 @@
+start ..\tools\nwjs-with-music\nw.exe ..\src
